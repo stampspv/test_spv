@@ -41,7 +41,7 @@
     </div>
 
     <!-- Model Viewer Container -->
-    <div id="viewer-container">
+    <div id="viewer-container" class="active">
         <model-viewer
             id="model-viewer"
             src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
@@ -57,10 +57,12 @@
             min-camera-orbit="auto auto 0.5m"
             max-camera-orbit="auto auto 10m"
             loading="eager"
+            environment-image="neutral"
+            exposure="1"
         >
             <!-- AR Button -->
             <button slot="ar-button" id="ar-button">
-                View in AR
+                📷 View in AR
             </button>
 
             <!-- Loading indicator -->
@@ -73,9 +75,14 @@
             <div id="error-message" slot="error">
                 <p>Failed to load 3D model</p>
             </div>
+
+            <!-- Camera info overlay -->
+            <div id="camera-info" class="camera-overlay">
+                <p>👆 Drag to rotate • 🤏 Pinch to zoom</p>
+            </div>
         </model-viewer>
 
-        <button id="close-viewer">Back to Menu</button>
+        <button id="menu-button">☰ Menu</button>
     </div>
 
     <!-- Main application -->

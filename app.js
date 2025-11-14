@@ -45,7 +45,7 @@ class UniversalARViewer {
         this.infoPanel = document.getElementById('info');
         this.modelSelect = document.getElementById('modelSelect');
         this.fileInput = document.getElementById('fileInput');
-        this.closeButton = document.getElementById('close-viewer');
+        this.menuButton = document.getElementById('menu-button');
         this.deviceStatus = document.getElementById('device-status');
         this.arStatus = document.getElementById('ar-status');
     }
@@ -106,29 +106,29 @@ class UniversalARViewer {
             }
         });
 
-        // Close viewer button
-        this.closeButton.addEventListener('click', () => {
-            this.closeViewer();
+        // Menu button - toggle between viewer and menu
+        this.menuButton.addEventListener('click', () => {
+            this.toggleMenu();
         });
 
-        // Click anywhere on info panel to open viewer
-        this.infoPanel.addEventListener('click', (e) => {
-            // Don't open if clicking on select or file input
-            if (e.target !== this.modelSelect && e.target !== this.fileInput) {
-                this.openViewer();
-            }
-        });
-
-        // Add a dedicated "View Model" button
-        this.addViewModelButton();
+        // Request camera permission on page load
+        this.requestCameraPermission();
     }
 
-    addViewModelButton() {
-        const button = document.createElement('button');
-        button.className = 'view-model-btn';
-        button.textContent = '🎨 View 3D Model';
-        button.addEventListener('click', () => this.openViewer());
-        this.infoPanel.appendChild(button);
+    toggleMenu() {
+        const viewerActive = this.viewerContainer.classList.contains('active');
+
+        if (viewerActive) {
+            // Show menu, hide viewer
+            this.viewerContainer.classList.remove('active');
+            this.infoPanel.classList.add('active');
+            document.body.style.overflow = 'auto';
+        } else {
+            // Show viewer, hide menu
+            this.infoPanel.classList.remove('active');
+            this.viewerContainer.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     loadModel(modelKey) {
@@ -142,10 +142,10 @@ class UniversalARViewer {
 
         this.showStatus(`Loading ${model.name}...`, 'info');
 
-        // Open viewer after model starts loading
-        setTimeout(() => {
-            this.openViewer();
-        }, 100);
+        // Close menu and show viewer
+        this.infoPanel.classList.remove('active');
+        this.viewerContainer.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
 
     loadCustomModel(file) {
@@ -166,24 +166,10 @@ class UniversalARViewer {
         // You'd need to convert GLB to USDZ for iOS AR support
         this.showStatus(`Loading ${file.name}...`, 'info');
 
-        setTimeout(() => {
-            this.openViewer();
-        }, 100);
-    }
-
-    openViewer() {
+        // Close menu and show viewer
+        this.infoPanel.classList.remove('active');
         this.viewerContainer.classList.add('active');
-        this.infoPanel.style.display = 'none';
         document.body.style.overflow = 'hidden';
-
-        // Request camera permission when opening viewer
-        this.requestCameraPermission();
-    }
-
-    closeViewer() {
-        this.viewerContainer.classList.remove('active');
-        this.infoPanel.style.display = 'block';
-        document.body.style.overflow = 'auto';
     }
 
     async requestCameraPermission() {
