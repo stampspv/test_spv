@@ -54,8 +54,12 @@ class UniversalARViewer {
         const ua = navigator.userAgent;
         let deviceInfo = '';
 
-        if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
-            deviceInfo = '📱 iOS Device - AR Quick Look Supported';
+        this.isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+
+        if (this.isIOS) {
+            deviceInfo = '📱 iOS Device - 3D Viewer Mode (AR in Android)';
+            // Hide AR button on iOS to prevent redirect
+            this.hideARButtonOnIOS();
         } else if (/Android/.test(ua)) {
             deviceInfo = '🤖 Android Device - WebXR AR Supported';
         } else {
@@ -63,6 +67,16 @@ class UniversalARViewer {
         }
 
         this.deviceStatus.textContent = deviceInfo;
+    }
+
+    hideARButtonOnIOS() {
+        // Wait for model-viewer to load
+        setTimeout(() => {
+            const arButton = document.getElementById('ar-button');
+            if (arButton && this.isIOS) {
+                arButton.style.display = 'none';
+            }
+        }, 500);
     }
 
     checkARCapabilities() {
@@ -137,7 +151,6 @@ class UniversalARViewer {
 
         this.currentModel = modelKey;
         this.modelViewer.setAttribute('src', model.glb);
-        this.modelViewer.setAttribute('ios-src', model.usdz);
         this.modelViewer.setAttribute('alt', model.name);
 
         this.showStatus(`Loading ${model.name}...`, 'info');

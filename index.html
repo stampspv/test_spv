@@ -21,10 +21,14 @@
         <div id="instructions">
             <h3>Controls:</h3>
             <ul>
-                <li><strong>3D View:</strong> Drag to rotate, pinch to zoom</li>
-                <li><strong>AR Mode:</strong> Tap "View in AR" button below model</li>
-                <li><strong>In AR:</strong> Move, scale, and rotate with gestures</li>
+                <li><strong>Rotate:</strong> Drag to rotate the model</li>
+                <li><strong>Zoom:</strong> Pinch to zoom in/out</li>
+                <li><strong>Pan:</strong> Two-finger drag to move</li>
+                <li><strong>AR Mode (Android):</strong> Tap "View in AR" button</li>
             </ul>
+            <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;">
+                Note: iOS shows 3D viewer only. AR available on Android devices.
+            </p>
         </div>
 
         <div id="model-selector">
@@ -45,10 +49,9 @@
         <model-viewer
             id="model-viewer"
             src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-            ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
             alt="3D Model"
             ar
-            ar-modes="webxr scene-viewer quick-look"
+            ar-modes="webxr scene-viewer"
             camera-controls
             touch-action="pan-y"
             auto-rotate
