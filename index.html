@@ -21,13 +21,13 @@
         <div id="instructions">
             <h3>Controls:</h3>
             <ul>
+                <li><strong>Camera Background:</strong> Live camera feed behind 3D model</li>
                 <li><strong>Rotate:</strong> Drag to rotate the model</li>
                 <li><strong>Zoom:</strong> Pinch to zoom in/out</li>
                 <li><strong>Pan:</strong> Two-finger drag to move</li>
-                <li><strong>AR Mode (Android):</strong> Tap "View in AR" button</li>
             </ul>
             <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;">
-                Note: iOS shows 3D viewer only. AR available on Android devices.
+                Works on all devices! Camera permission required for AR-like experience.
             </p>
         </div>
 
@@ -46,6 +46,9 @@
 
     <!-- Model Viewer Container -->
     <div id="viewer-container" class="active">
+        <!-- Live Camera Feed Background -->
+        <video id="camera-feed" autoplay playsinline></video>
+
         <model-viewer
             id="model-viewer"
             src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"

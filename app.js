@@ -48,6 +48,8 @@ class UniversalARViewer {
         this.menuButton = document.getElementById('menu-button');
         this.deviceStatus = document.getElementById('device-status');
         this.arStatus = document.getElementById('ar-status');
+        this.cameraFeed = document.getElementById('camera-feed');
+        this.cameraStream = null;
     }
 
     detectDevice() {
@@ -57,13 +59,13 @@ class UniversalARViewer {
         this.isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
 
         if (this.isIOS) {
-            deviceInfo = '📱 iOS Device - 3D Viewer Mode (AR in Android)';
+            deviceInfo = '📱 iOS Device - Camera AR Mode';
             // Hide AR button on iOS to prevent redirect
             this.hideARButtonOnIOS();
         } else if (/Android/.test(ua)) {
-            deviceInfo = '🤖 Android Device - WebXR AR Supported';
+            deviceInfo = '🤖 Android Device - Camera AR Mode';
         } else {
-            deviceInfo = '💻 Desktop - 3D Viewer Mode';
+            deviceInfo = '💻 Desktop - 3D Viewer with Webcam';
         }
 
         this.deviceStatus.textContent = deviceInfo;
@@ -137,11 +139,13 @@ class UniversalARViewer {
             this.viewerContainer.classList.remove('active');
             this.infoPanel.classList.add('active');
             document.body.style.overflow = 'auto';
+            this.stopCameraFeed();
         } else {
             // Show viewer, hide menu
             this.infoPanel.classList.remove('active');
             this.viewerContainer.classList.add('active');
             document.body.style.overflow = 'hidden';
+            this.requestCameraPermission();
         }
     }
 
@@ -186,21 +190,35 @@ class UniversalARViewer {
     }
 
     async requestCameraPermission() {
-        // Camera permission is automatically requested when AR button is clicked
-        // But we can pre-request it for better UX
+        // Start the camera feed for AR-like background
         try {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment' }
-                });
-                // Stop the stream immediately
-                stream.getTracks().forEach(track => track.stop());
-                console.log('Camera permission granted');
+                const constraints = {
+                    video: {
+                        facingMode: 'environment', // Use back camera on mobile
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    }
+                };
+
+                this.cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                this.cameraFeed.srcObject = this.cameraStream;
+
+                console.log('Camera feed started');
+                this.showStatus('Camera feed active!', 'success');
             }
         } catch (error) {
-            // Permission denied or not available - that's okay
-            // AR will request it again when needed
-            console.log('Camera permission not granted yet:', error.message);
+            console.error('Camera permission denied:', error);
+            this.showStatus('Camera access denied. Using white background.', 'error');
+            this.cameraFeed.style.display = 'none';
+        }
+    }
+
+    stopCameraFeed() {
+        if (this.cameraStream) {
+            this.cameraStream.getTracks().forEach(track => track.stop());
+            this.cameraStream = null;
+            this.cameraFeed.srcObject = null;
         }
     }
 
