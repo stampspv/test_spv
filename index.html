@@ -3,40 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR 3D Model Viewer with Gestures</title>
+    <title>Universal AR 3D Model Viewer</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- Model Viewer - Works on ALL devices (iOS + Android) -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 </head>
 <body>
     <div id="info">
-        <h1>AR 3D Model Viewer</h1>
-        <p>Click "Start AR" to view 3D models in augmented reality</p>
+        <h1>Universal AR 3D Model Viewer</h1>
+        <p class="subtitle">Works on iOS, Android, and Desktop!</p>
+
+        <div id="device-info">
+            <p id="device-status">Loading...</p>
+        </div>
+
         <div id="instructions">
             <h3>Controls:</h3>
             <ul>
-                <li><strong>Tap</strong>: Place model in AR space</li>
-                <li><strong>Drag</strong>: Move model horizontally</li>
-                <li><strong>Pinch</strong>: Scale model up/down</li>
-                <li><strong>Two-finger drag</strong>: Move model in 3D space</li>
+                <li><strong>3D View:</strong> Drag to rotate, pinch to zoom</li>
+                <li><strong>AR Mode:</strong> Tap "View in AR" button below model</li>
+                <li><strong>In AR:</strong> Move, scale, and rotate with gestures</li>
             </ul>
         </div>
+
         <div id="model-selector">
             <label for="modelSelect">Choose 3D Model:</label>
             <select id="modelSelect">
-                <option value="default">Default Cube</option>
-                <option value="custom">Upload .obj/.3ds file</option>
+                <option value="default">Astronaut (Default)</option>
+                <option value="robot">Robot</option>
+                <option value="custom">Upload .glb/.gltf file</option>
             </select>
-            <input type="file" id="fileInput" accept=".obj,.3ds" style="display:none;">
+            <input type="file" id="fileInput" accept=".glb,.gltf" style="display:none;">
         </div>
-        <button id="ar-button" disabled>Checking AR Support...</button>
-        <div id="status"></div>
+
+        <div id="ar-status"></div>
     </div>
 
-    <div id="ar-container"></div>
+    <!-- Model Viewer Container -->
+    <div id="viewer-container">
+        <model-viewer
+            id="model-viewer"
+            src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+            ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
+            alt="3D Model"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls
+            touch-action="pan-y"
+            auto-rotate
+            shadow-intensity="1"
+            camera-orbit="45deg 55deg 2.5m"
+            min-camera-orbit="auto auto 0.5m"
+            max-camera-orbit="auto auto 10m"
+            loading="eager"
+        >
+            <!-- AR Button -->
+            <button slot="ar-button" id="ar-button">
+                View in AR
+            </button>
 
-    <!-- Three.js and loaders -->
-    <script src="https://unpkg.com/three@0.152.0/build/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.152.0/examples/js/loaders/OBJLoader.js"></script>
-    <script src="https://unpkg.com/three@0.152.0/examples/js/loaders/TDSLoader.js"></script>
+            <!-- Loading indicator -->
+            <div id="lazy-load-poster" slot="poster">
+                <div class="loader"></div>
+                <p>Loading 3D Model...</p>
+            </div>
+
+            <!-- Error message -->
+            <div id="error-message" slot="error">
+                <p>Failed to load 3D model</p>
+            </div>
+        </model-viewer>
+
+        <button id="close-viewer">Back to Menu</button>
+    </div>
 
     <!-- Main application -->
     <script src="app.js"></script>
