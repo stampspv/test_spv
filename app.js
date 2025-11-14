@@ -46,9 +46,11 @@ class UniversalARViewer {
         this.modelSelect = document.getElementById('modelSelect');
         this.fileInput = document.getElementById('fileInput');
         this.menuButton = document.getElementById('menu-button');
+        this.captureButton = document.getElementById('capture-button');
         this.deviceStatus = document.getElementById('device-status');
         this.arStatus = document.getElementById('ar-status');
         this.cameraFeed = document.getElementById('camera-feed');
+        this.captureCanvas = document.getElementById('capture-canvas');
         this.cameraStream = null;
     }
 
@@ -125,6 +127,11 @@ class UniversalARViewer {
         // Menu button - toggle between viewer and menu
         this.menuButton.addEventListener('click', () => {
             this.toggleMenu();
+        });
+
+        // Capture button - take screenshot
+        this.captureButton.addEventListener('click', () => {
+            this.captureScreenshot();
         });
 
         // Request camera permission on page load
@@ -220,6 +227,85 @@ class UniversalARViewer {
             this.cameraStream = null;
             this.cameraFeed.srcObject = null;
         }
+    }
+
+    async captureScreenshot() {
+        try {
+            // Add flash animation to button
+            this.captureButton.classList.add('capturing');
+
+            // Get viewport dimensions
+            const width = this.viewerContainer.clientWidth;
+            const height = this.viewerContainer.clientHeight;
+
+            // Setup canvas
+            const canvas = this.captureCanvas;
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+
+            // Draw camera feed background
+            if (this.cameraFeed.srcObject && this.cameraFeed.readyState >= 2) {
+                ctx.drawImage(this.cameraFeed, 0, 0, width, height);
+            } else {
+                // Fallback to white background if camera not available
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, width, height);
+            }
+
+            // Get 3D model screenshot with transparency
+            const blob = await this.modelViewer.toBlob({
+                mimeType: 'image/png',
+                qualityArgument: 1.0,
+                idealAspect: true
+            });
+
+            // Convert blob to image and overlay on camera
+            const modelImage = await this.blobToImage(blob);
+            ctx.drawImage(modelImage, 0, 0, width, height);
+
+            // Convert canvas to blob and download
+            canvas.toBlob((finalBlob) => {
+                this.downloadImage(finalBlob);
+                this.showStatus('Screenshot saved!', 'success');
+
+                // Remove flash animation
+                setTimeout(() => {
+                    this.captureButton.classList.remove('capturing');
+                }, 500);
+            }, 'image/png');
+
+        } catch (error) {
+            console.error('Screenshot failed:', error);
+            this.showStatus('Failed to capture screenshot', 'error');
+            this.captureButton.classList.remove('capturing');
+        }
+    }
+
+    blobToImage(blob) {
+        return new Promise((resolve, reject) => {
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                resolve(img);
+            };
+            img.onerror = reject;
+            img.src = url;
+        });
+    }
+
+    downloadImage(blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
+        const time = new Date().toTimeString().split(' ')[0].replace(/:/g, '-');
+        link.download = `ar-capture-${timestamp}-${time}.png`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     }
 
     showStatus(message, type = 'info') {

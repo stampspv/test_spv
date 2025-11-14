@@ -25,6 +25,7 @@
                 <li><strong>Rotate:</strong> Drag to rotate the model</li>
                 <li><strong>Zoom:</strong> Pinch to zoom in/out</li>
                 <li><strong>Pan:</strong> Two-finger drag to move</li>
+                <li><strong>Capture:</strong> Tap 📸 button to save screenshot</li>
             </ul>
             <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;">
                 Works on all devices! Camera permission required for AR-like experience.
@@ -89,7 +90,11 @@
         </model-viewer>
 
         <button id="menu-button">☰ Menu</button>
+        <button id="capture-button">📸 Capture</button>
     </div>
+
+    <!-- Hidden canvas for compositing -->
+    <canvas id="capture-canvas" style="display:none;"></canvas>
 
     <!-- Main application -->
     <script src="app.js"></script>

@@ -225,6 +225,45 @@ model-viewer {
     transform: translateY(0);
 }
 
+/* Capture button */
+#capture-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #764ba2;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 101;
+    transition: transform 0.2s, background-color 0.2s;
+    font-size: 1rem;
+}
+
+#capture-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 1);
+}
+
+#capture-button:active {
+    transform: translateY(0);
+}
+
+/* Capture button flash animation */
+@keyframes flashCapture {
+    0% { background: rgba(255, 255, 255, 0.95); }
+    50% { background: rgba(118, 75, 162, 0.9); color: white; }
+    100% { background: rgba(255, 255, 255, 0.95); color: #764ba2; }
+}
+
+#capture-button.capturing {
+    animation: flashCapture 0.5s ease-in-out;
+}
+
 /* Camera Info Overlay */
 .camera-overlay {
     position: absolute;
@@ -348,6 +387,13 @@ model-viewer {
     #menu-button {
         top: 10px;
         right: 10px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    #capture-button {
+        top: 10px;
+        left: 10px;
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
     }
