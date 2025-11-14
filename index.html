@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR 3D Model Viewer with Gestures</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="info">
+        <h1>AR 3D Model Viewer</h1>
+        <p>Click "Start AR" to view 3D models in augmented reality</p>
+        <div id="instructions">
+            <h3>Controls:</h3>
+            <ul>
+                <li><strong>Tap</strong>: Place model in AR space</li>
+                <li><strong>Drag</strong>: Move model horizontally</li>
+                <li><strong>Pinch</strong>: Scale model up/down</li>
+                <li><strong>Two-finger drag</strong>: Move model in 3D space</li>
+            </ul>
+        </div>
+        <div id="model-selector">
+            <label for="modelSelect">Choose 3D Model:</label>
+            <select id="modelSelect">
+                <option value="default">Default Cube</option>
+                <option value="custom">Upload .obj/.3ds file</option>
+            </select>
+            <input type="file" id="fileInput" accept=".obj,.3ds" style="display:none;">
+        </div>
+        <button id="ar-button" disabled>Checking AR Support...</button>
+        <div id="status"></div>
+    </div>
+
+    <div id="ar-container"></div>
+
+    <!-- Three.js and loaders -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/examples/js/loaders/TDSLoader.js"></script>
+
+    <!-- Main application -->
+    <script src="app.js"></script>
+</body>
+</html>
