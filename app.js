@@ -41,8 +41,18 @@ class ARModelViewer {
     }
 
     async checkARSupport() {
+        // Check if device is iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        if (isIOS) {
+            this.arButton.textContent = 'iOS Not Supported (Use Android)';
+            this.showStatus('iOS Safari doesn\'t support WebXR. Please use an Android device with Chrome browser for AR features.', 'error');
+            this.arButton.disabled = true;
+            return;
+        }
+
         if (!navigator.xr) {
-            this.showStatus('WebXR not supported on this device', 'error');
+            this.showStatus('WebXR not supported on this device. Try Chrome on Android.', 'error');
             this.arButton.textContent = 'AR Not Supported';
             return;
         }
@@ -55,7 +65,7 @@ class ARModelViewer {
                 this.showStatus('AR is ready!', 'success');
             } else {
                 this.arButton.textContent = 'AR Not Available';
-                this.showStatus('AR mode not available on this device', 'error');
+                this.showStatus('AR mode not available on this device. Make sure you have ARCore installed and are using Chrome.', 'error');
             }
         } catch (error) {
             console.error('Error checking AR support:', error);
