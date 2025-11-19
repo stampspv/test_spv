@@ -13,10 +13,10 @@ class UniversalARViewer {
                 glb: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
                 usdz: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz'
             },
-            robot: {
-                name: 'Robot',
-                glb: 'https://modelviewer.dev/shared-assets/models/RobotExpressive.glb',
-                usdz: 'https://modelviewer.dev/shared-assets/models/RobotExpressive.usdz'
+            teddy: {
+                name: 'Teddy Bear',
+                glb: 'https://cdn.glitch.global/36cb8393-65c6-408d-a538-055ada20431b/bear.glb',
+                usdz: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz'
             }
         };
 
