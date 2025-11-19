@@ -44,7 +44,6 @@ class UniversalARViewer {
         this.viewerContainer = document.getElementById('viewer-container');
         this.infoPanel = document.getElementById('info');
         this.modelSelect = document.getElementById('modelSelect');
-        this.fileInput = document.getElementById('fileInput');
         this.menuButton = document.getElementById('menu-button');
         this.captureButton = document.getElementById('capture-button');
         this.deviceStatus = document.getElementById('device-status');
@@ -106,22 +105,7 @@ class UniversalARViewer {
         // Model selection
         this.modelSelect.addEventListener('change', (e) => {
             const value = e.target.value;
-
-            if (value === 'custom') {
-                this.fileInput.style.display = 'block';
-                this.fileInput.click();
-            } else {
-                this.fileInput.style.display = 'none';
-                this.loadModel(value);
-            }
-        });
-
-        // File upload
-        this.fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                this.loadCustomModel(file);
-            }
+            this.loadModel(value);
         });
 
         // Menu button - toggle between viewer and menu
@@ -165,30 +149,6 @@ class UniversalARViewer {
         this.modelViewer.setAttribute('alt', model.name);
 
         this.showStatus(`Loading ${model.name}...`, 'info');
-
-        // Close menu and show viewer
-        this.infoPanel.classList.remove('active');
-        this.viewerContainer.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    loadCustomModel(file) {
-        const fileExtension = file.name.split('.').pop().toLowerCase();
-
-        if (!['glb', 'gltf'].includes(fileExtension)) {
-            this.showStatus('Please upload a .glb or .gltf file', 'error');
-            return;
-        }
-
-        // Create object URL for the file
-        const url = URL.createObjectURL(file);
-
-        this.modelViewer.setAttribute('src', url);
-        this.modelViewer.setAttribute('alt', file.name);
-
-        // Note: Custom models won't have iOS USDZ version
-        // You'd need to convert GLB to USDZ for iOS AR support
-        this.showStatus(`Loading ${file.name}...`, 'info');
 
         // Close menu and show viewer
         this.infoPanel.classList.remove('active');
